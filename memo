@@ -1,0 +1,11 @@
+These are meant to let one use OpenCV operations through the command line.
+They should work as follows:
+
+	<program> [args if needed] [-f to indicate that the next arg will be the source filename]
+
+Unless specified otherwise with -f, the filename will be received through cin.
+So it should be possible to concatenate commands like so:
+
+	<program> -f foo.png || <program 2> || <program 3>
+
+Each program's output (and thus the filename of the produced image) will be the same as the input filename, plus a tag indicating the performed operation. Like this, each filename will tell of the original image and all the operations performed on it. Files will be saved next to the originals.

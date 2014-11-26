@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 2.8)
+project( diff_gauss )
+find_package( OpenCV REQUIRED )
+add_definitions( -std=c++11 )
+add_executable( diff_gauss main.cpp )
+target_link_libraries( diff_gauss ${OpenCV_LIBS})
+message("________________________________________________________________________________")
