@@ -8,5 +8,4 @@ So it should be possible to concatenate commands like so:
 
 	<program> -f foo.png || <program 2> || <program 3>
 
-
 Each program's output (and thus the filename of the produced image) will be the same as the input filename, plus a tag indicating the performed operation. Like this, each filename will tell of the original image and all the operations performed on it. Files will be saved next to the originals.
