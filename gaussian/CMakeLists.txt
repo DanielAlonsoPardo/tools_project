@@ -1,7 +1,5 @@
-cmake_minimum_required(VERSION 2.8)
-project( gauss )
-find_package( OpenCV REQUIRED )
-add_definitions( -std=c++11 )
+project( "Gaussian blur" )
+
 add_executable( gauss main.cpp )
 target_link_libraries( gauss ${OpenCV_LIBS})
-message("________________________________________________________________________________")
+

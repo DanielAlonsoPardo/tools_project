@@ -1,7 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
-project( thresh )
-find_package( OpenCV REQUIRED )
-add_definitions( -std=c++11 )
+project( "Threshold" )
+
 add_executable( thresh main.cpp )
 target_link_libraries( thresh ${OpenCV_LIBS})
-message("________________________________________________________________________________")
