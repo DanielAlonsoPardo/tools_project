@@ -27,7 +27,7 @@ void print_errmsg(const char* argv)
        << "\t-ar\t\"Absolute+Range\" A combination of the previous two.\n";
 }
 
-int main(int argc, char** argv )
+int main(int argc, char** argv)
 {
   if ( argc < 3)
     {
@@ -63,7 +63,7 @@ int main(int argc, char** argv )
   if ( !image.data )
     {
       cerr << "No image data \n";
-      cerr << "Admitted formats reminder: *.bmp, *.dib, *.jpeg, *.jpg, *.jpe, *.jp2, *.png, *.pbm, *.pgm, *.ppm, *.sr, *.ras, *.tiff, *.tif \n");
+      cerr << "Admitted formats reminder: *.bmp, *.dib, *.jpeg, *.jpg, *.jpe, *.jp2, *.png, *.pbm, *.pgm, *.ppm, *.sr, *.ras, *.tiff, *.tif \n";
       return -1;
     }
 
