@@ -14,26 +14,35 @@ using namespace std;
   The image is converted to grayscale in the process.
 
  */
+void print_errmsg(const char* argv)
+{
+      cerr << "usage: " << argv << " [-f <Image_path>]\n";
+      cerr << "This program stretches the color range of an image to go from 0 to 255 (after grayscale) and saves the result as a png. It outputs the name of the created file. If the -f argument isn't provided, it takes a filename from standard input.\n";
+}
 
 int main(int argc, char** argv )
 {
-  if ( argc < 2 || argc > 4 || argc == 3 )
+  if (argc > 3)
     {
-      cerr << "usage: " << argv[0] << " (gauss radius) [-f <Image_path>]\n";
-      cerr << "This program stretches the color range of an image to go from 0 to 255 (after grayscale) and saves the result as a png. It outputs the name of the created file. If the -f argument isn't provided, it takes a filename from standard input.\n";
+      print_errmsg(argv[0]);
       return -1; 
-   }
+    }
   string filename;
-  if (argc == 4)
-    if (!strcmp(argv[2], "-f"))
-      filename = argv[3];
+  if (argc == 3)
+    if (!strcmp(argv[1], "-f"))
+      filename = argv[2];
     else
       {
-	cerr << "No filename provided/n";
+	print_errmsg(argv[0]);
 	return -1;
       }
-  else
+  else if (argc == 1)
     cin >> filename;
+  else
+      {
+	print_errmsg(argv[0]);
+	return -1;
+      }
 
   Mat image = imread(filename, 1);
   if ( !image.data )
@@ -43,22 +52,22 @@ int main(int argc, char** argv )
       return -1;
     }
 
-  int r1 = atoi(argv[1]);
-
   //Convert to grayscale
-  cvtColor( image, image, CV_BGR2GRAY );
-  if (r1%2 == 0) r1++;
+  cvtColor(image, image, CV_BGR2GRAY);
 
-  //Gauss blurs
-  Mat g1;
-  GaussianBlur(image, g1, Size(r1,r1), 0);
+  //stretch
+  double min, max;
+  minMaxLoc(image, &min, &max);
+  image -= min;
+  max -= min;
+  image *= (255.0 / max);
 
   //Change filename extension
   std::string writename = filename;
   writename.erase(writename.find_last_of('.'));
   std::ostringstream extension;
   //add operation tag
-  extension << "_" << r1 << "g" << ".png";
+  extension << "_" << "r" << ".png";
   writename += extension.str();
   imwrite(writename, g1);
   cout << writename << endl;
