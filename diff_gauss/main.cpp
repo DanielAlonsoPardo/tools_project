@@ -82,7 +82,6 @@ int main(int argc, char** argv)
 
 
   //Convert to grayscale
-  image.convertTo( image, CV_16UC3 );
   cvtColor( image, image, CV_BGR2GRAY );
   image.convertTo( image, CV_16SC1 );
 
