@@ -52,13 +52,17 @@ int main(int argc, char** argv)
       else if (!strcmp(argv[i], "-ar"))
 	option = ABSOLUTE_RANGE_ADJUSTED;
       else if (!strcmp(argv[i], "-f"))
-	  filename = argv[++i];
+	filename = argv[++i];
       else
-	cerr << "Ignoring unrecognized option: \"" << argv[4] << "\"\n";
+	{
+	  print_errmsg(argv[0]);
+	  return -1;
+	}
     }
 
   if (filename.empty())
     cin >> filename;
+
   Mat image = imread( filename, 1 );
   if ( !image.data )
     {
@@ -112,7 +116,7 @@ int main(int argc, char** argv)
   gauss_diff.convertTo(gauss_diff, CV_8UC1);
   //bitwise_not(gauss_diff, gauss_diff);
 
-  std::string writename = argv[1];
+  std::string writename = filename;
   writename.erase(writename.find_last_of('.'));
   std::ostringstream extension;
   string opts = "";
