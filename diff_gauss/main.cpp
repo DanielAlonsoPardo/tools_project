@@ -38,19 +38,20 @@ int main(int argc, char** argv)
   enum Option {LOSSLESS, RANGE_ADJUSTED, ABSOLUTE, ABSOLUTE_RANGE_ADJUSTED, NO_OPTION = -1};
 
   string filename;
+  string str_option = "";
   Option option = NO_OPTION;
 
   for (int i = 3; i < argc; i++)
     {
 
       if (!strcmp(argv[i], "-l"))
-	option = LOSSLESS;
+	{option = LOSSLESS; str_option = "-l";}
       else if (!strcmp(argv[i], "-r"))
-	option = RANGE_ADJUSTED;
+	{option = RANGE_ADJUSTED; str_option = "-r";}
       else if (!strcmp(argv[i], "-a"))
-	option = ABSOLUTE;
+	{option = ABSOLUTE; str_option = "-a";}
       else if (!strcmp(argv[i], "-ar"))
-	option = ABSOLUTE_RANGE_ADJUSTED;
+	{option = ABSOLUTE_RANGE_ADJUSTED; str_option = "-ar";}
       else if (!strcmp(argv[i], "-f"))
 	filename = argv[++i];
       else
@@ -74,9 +75,9 @@ int main(int argc, char** argv)
 
 
   //only odd radius is allowed
-  int r1 = atoi(argv[2]);
+  int r1 = atoi(argv[1]);
   if (r1%2 == 0) r1++;
-  int r2 = atoi(argv[3]);
+  int r2 = atoi(argv[2]);
   if (r2%2 == 0) r2++;
 
 
@@ -119,10 +120,8 @@ int main(int argc, char** argv)
   std::string writename = filename;
   writename.erase(writename.find_last_of('.'));
   std::ostringstream extension;
-  string opts = "";
-  if (argc == 5)
-    opts = argv[4];
-  extension << "_" << r1 << "-" << r2 << "gd" << ((option == NO_OPTION) ? "" : opts) <<".png";
+
+  extension << "_" << r1 << "-" << r2 << "gd" << str_option <<".png";
   writename += extension.str();
   imwrite(writename, gauss_diff);
   printf("%s\n", writename.c_str());
