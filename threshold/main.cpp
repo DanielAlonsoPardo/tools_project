@@ -36,6 +36,7 @@ int main(int argc, char** argv )
 
   string filename;
   int thresh_type = THRESH_BINARY;
+  int fill_value = 255;
   double thresh = stoi(argv[1]);
 
   bool filename_chosen = false;
@@ -49,6 +50,8 @@ int main(int argc, char** argv )
 	filename = argv[i + 1];
 	filename_chosen = true;
       }
+    else if (!strcmp(argv[i], "-c"))
+      fill_value = stoi(argv[i+1]);
     else if (!strcmp(argv[i], "-t"))
       {
         if (!strcmp(argv[i+1], "THRESH_BINARY")) {
@@ -90,7 +93,7 @@ int main(int argc, char** argv )
   cvtColor( image, image, CV_BGR2GRAY );
 
   //Threshold
-  threshold(image, image, thresh, 255, thresh_type);
+  threshold(image, image, thresh, fill_value, thresh_type);
 
   //Change filename extension
   std::string writename = filename;
