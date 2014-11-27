@@ -69,7 +69,7 @@ int main(int argc, char** argv )
   //add operation tag
   extension << "_" << "r" << ".png";
   writename += extension.str();
-  imwrite(writename, g1);
+  imwrite(writename, image);
   cout << writename << endl;
 
   return 0;
