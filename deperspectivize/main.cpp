@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <queue>
+#include <fstream>
+
 
 #include <paint_tools.hpp>
 
@@ -114,7 +116,8 @@ int main(int argc, char** argv )
     }
   else
     {
-      ifstream in_file(read_file);
+      ifstream in_file;
+      in_file.open(read_file);
       if (!in_file)
 	{
 	  cerr << "File could not be opened: " << read_file << endl;
@@ -125,7 +128,7 @@ int main(int argc, char** argv )
       while (in_file >> x >> y)
 	ref_points.push_back(Point2f(x, y));
 
-      if (ref_points.size != 4)
+      if (ref_points.size() != 4)
 	{
 	  cerr << "File must contain exactly 4 points with the following syntax: \n"
 	       << "<x_pos> <y_pos>\\n\n";
@@ -152,15 +155,16 @@ int main(int argc, char** argv )
 
   if (!write_file.empty())
     {
-      ofstream out_file(write_file);
+      ofstream out_file;
+      out_file.open(write_file);
       if (!out_file)
 	{
 	  cerr << "Problem writing to file: " << write_file << endl
 	       << "Points to be written: \n"
-	       << dst_points << endl;
+	       << ref_points << endl;
 	}
       for (int i = 0; i < dst_points.size(); i++)
-	out_file << dst_points[i].x() << " " << dst_points[i].y() << endl;
+	out_file << ref_points[i].x << " " << ref_points[i].y << endl;
       out_file.close();
     }
 
