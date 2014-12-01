@@ -41,6 +41,27 @@ int main(int argc, char** argv)
   string str_option = "";
   Option option = NO_OPTION;
 
+  char* check = 0;
+
+  int r1 = strtol(argv[1], &check, 10);
+  if (check == argv[1])
+    {
+      print_errmsg(argv[0]);
+      return -1;
+    }
+
+  int r2 = strtol(argv[2], &check, 10);
+  if (check == argv[2])
+    {
+      print_errmsg(argv[0]);
+      return -1;
+    }
+
+  //only odd radius is allowed
+  if (r1%2 == 0) r1++;
+  if (r2%2 == 0) r2++;
+
+
   for (int i = 3; i < argc; i++)
     {
 
@@ -71,14 +92,6 @@ int main(int argc, char** argv)
       cerr << "Admitted formats reminder: *.bmp, *.dib, *.jpeg, *.jpg, *.jpe, *.jp2, *.png, *.pbm, *.pgm, *.ppm, *.sr, *.ras, *.tiff, *.tif \n";
       return -1;
     }
-
-
-
-  //only odd radius is allowed
-  int r1 = atoi(argv[1]);
-  if (r1%2 == 0) r1++;
-  int r2 = atoi(argv[2]);
-  if (r2%2 == 0) r2++;
 
 
   //Convert to grayscale

@@ -37,10 +37,18 @@ int main(int argc, char** argv )
   string filename;
   int thresh_type = THRESH_BINARY;
   int fill_value = 255;
-  double thresh = stoi(argv[1]);
+  double thresh;
 
   bool filename_chosen = false;
   bool err = false;
+
+  char* check = 0;
+  thresh = strtol(argv[1], &check, 10);
+  if (check == argv[1])
+    {
+      print_errmsg(argv[0]);
+      return -1;
+    }
 
 
   string th_t = "b";

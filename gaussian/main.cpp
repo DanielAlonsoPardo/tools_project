@@ -23,6 +23,16 @@ int main(int argc, char** argv )
       cerr << "This function performs a gaussian blur operation on the provided image (after grayscale) and saves the result as a png. It outputs the name of the created file. If the -f argument isn't provided, it takes a filename from standard input.\n";
       return -1; 
    }
+
+  char* check = 0;
+  int r1 = strtol(argv[1], &check, 10);
+  if (check == argv[1])
+    {
+      print_errmsg(argv[0]);
+      return -1;
+    }
+
+
   string filename;
   if (argc == 4)
     if (!strcmp(argv[2], "-f"))
@@ -42,8 +52,6 @@ int main(int argc, char** argv )
       cerr << "Admitted formats reminder: *.bmp, *.dib, *.jpeg, *.jpg, *.jpe, *.jp2, *.png, *.pbm, *.pgm, *.ppm, *.sr, *.ras, *.tiff, *.tif \n";
       return -1;
     }
-
-  int r1 = atoi(argv[1]);
 
   //Convert to grayscale
   cvtColor( image, image, CV_BGR2GRAY );
