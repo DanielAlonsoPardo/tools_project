@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <queue>
+#include <fstream>
 
 #include <paint_tools.hpp>
 
@@ -56,7 +57,7 @@ int main(int argc, char** argv )
   setMouseCallback("Image", callback, NULL);
   vector<Point2f> ref_points;
   int wK = -1;
-  for (int i = 0; i < 3 && wK != 27; wK = waitKey(50))
+  for (int i = 0; i < 4 && wK != 27; wK = waitKey(50))
     {
       if (clicks.size() > 0)
   	{
@@ -75,10 +76,7 @@ int main(int argc, char** argv )
   paint_polygon(image, ref_points, red);
 
   imshow("Image", image);
-
   cout << ref_points << endl;
-
-
 
   waitKey(0);
 

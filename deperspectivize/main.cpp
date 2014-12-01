@@ -20,8 +20,8 @@ using namespace std;
 
 void print_errmsg(char* arg)
 {
-  cerr << "usage: " << arg << " [-f <Image_path>]\n";
-  cerr << "This program applies a perspective transform on the image provided using four points chosen by the user. The image is stretched such that the four points coincide with the edges of the original image. It outputs the name of the created file. If the -f argument isn't specified, it takes a filename from standard input.\n";
+  cerr << "usage: " << arg << " [-f <Image_path>] [-i <file with points to use>] [-o <file to write points used>]\n";
+  cerr << "This program applies a perspective transform on the image provided using four points chosen by the user either manually or specifying a file through -i. The image is stretched such that the four points coincide with the edges of the original image. It outputs the name of the created file and the points chosen points if the -o option was specified. If the -f argument isn't specified, it takes a filename from standard input.\n";
 }
 
 //globals???????
@@ -43,70 +43,98 @@ int main(int argc, char** argv )
 {
 
   string filename;
-  if (argc > 1)
-    if (!strcmp(argv[1], "-f"))
-      if (argc > 2)
-	filename = argv[2];
+  string read_file;
+  string write_file;
+
+  for (int i = 1; i < argc; i++)
+    {
+      if (!strcmp(argv[i], "-i"))
+	read_file = argv[++i];
+      else if (!strcmp(argv[i], "-o"))
+	write_file = argv[++i];
+      else if (!strcmp(argv[i], "-f"))
+	filename = argv[++i];
       else
 	{
-	  cerr << "No filename introduced\n";
 	  print_errmsg(argv[0]);
 	  return -1;
 	}
-    else
-      {
-	cerr << "Unrecognized arguments\n";
-	print_errmsg(argv[0]);
-	return -1;
-      }
-  else
+    }
+
+  if (filename.empty())
     cin >> filename;
 
   Mat image = imread(filename, 1);
   if ( !image.data )
     {
-      cerr << "No image data \n";
+      cerr << "No image data: " << filename << endl;
       cerr << "Admitted formats reminder: *.bmp, *.dib, *.jpeg, *.jpg, *.jpe, *.jp2, *.png, *.pbm, *.pgm, *.ppm, *.sr, *.ras, *.tiff, *.tif \n";
       return -1;
     }
 
 
-  /**                 **/
-  /** Point selection **/
-  /**                 **/
-  //Show image to the user
-  Mat point_selection_img = image.clone();
-  namedWindow("Point selection");
-  imshow("Point selection", point_selection_img);
-  setMouseCallback("Point selection", callback, NULL);
-
-  //Select 4 points, showing them
-  /***********************************/
-  /* Grab the four reference points */
-  ///Mark each one in red
   vector<Point2f> ref_points;
-  int wK = -1;
-  for (int i = 0; i < 4 && wK != 27; wK = waitKey(50))
-    {
-      if (clicks.size() > 0)
+  if (read_file.empty())
+    {//only if the points have to be chosen by hand
+      /**                         **/
+      /** Graphic point selection **/
+      /**                         **/
+      //Show image to the user
+      Mat point_selection_img = image.clone();
+      namedWindow("Point selection");
+      imshow("Point selection", point_selection_img);
+      setMouseCallback("Point selection", callback, NULL);
+
+      //Select 4 points, showing them
+      /***********************************/
+      /* Grab the four reference points */
+      ///Mark each one in red
+      int wK = -1;
+      for (int i = 0; i < 4 && wK != 27; wK = waitKey(50))
 	{
-	  //grab point
-	  ref_points.push_back(Point2f(clicks.front()));
-	  clicks.pop();
-	  //mark
-	  circle(point_selection_img, ref_points[i], 5, paint_tools::red, -1);
-	  //show
-	  imshow("Point selection", point_selection_img);
-	  i++;
+	  if (clicks.size() > 0)
+	    {
+	      //grab point
+	      ref_points.push_back(Point2f(clicks.front()));
+	      clicks.pop();
+	      //mark
+	      circle(point_selection_img, ref_points[i], 5, paint_tools::red, -1);
+	      //show
+	      imshow("Point selection", point_selection_img);
+	      i++;
+	    }
 	}
+      if (wK == 27)
+	{
+	  cerr << "Aborting...\n";
+	  return -1;
+	}
+      waitKey(300);
+      destroyAllWindows();
     }
-  if (wK == 27)
+  else
     {
-      cerr << "Aborting...\n";
-      return -1;
+      ifstream in_file(read_file);
+      if (!in_file)
+	{
+	  cerr << "File could not be opened: " << read_file << endl;
+	  print_errmsg(argv[0]);
+	  return -1;
+	}
+      float x, y;
+      while (in_file >> x >> y)
+	ref_points.push_back(Point2f(x, y));
+
+      if (ref_points.size != 4)
+	{
+	  cerr << "File must contain exactly 4 points with the following syntax: \n"
+	       << "<x_pos> <y_pos>\\n\n";
+	  print_errmsg(argv[0]);
+	  return -1;
+	}
+      in_file.close();
+
     }
-  waitKey(300);
-  destroyAllWindows();
 
 
   //Perform transformationx
@@ -121,6 +149,20 @@ int main(int argc, char** argv )
   Mat trans = getPerspectiveTransform(ref_points, dst_points);
 
   warpPerspective(image, image, trans, image.size());
+
+  if (!write_file.empty())
+    {
+      ofstream out_file(write_file);
+      if (!out_file)
+	{
+	  cerr << "Problem writing to file: " << write_file << endl
+	       << "Points to be written: \n"
+	       << dst_points << endl;
+	}
+      for (int i = 0; i < dst_points.size(); i++)
+	out_file << dst_points[i].x() << " " << dst_points[i].y() << endl;
+      out_file.close();
+    }
 
   //Change filename extension
   std::string writename = filename;
