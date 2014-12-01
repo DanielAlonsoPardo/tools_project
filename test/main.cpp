@@ -53,37 +53,34 @@ int main(int argc, char** argv )
   namedWindow("Image");
   imshow("Image", image);
 
-  // setMouseCallback("Image", callback, NULL);
-  // vector<Point2f> ref_points;
-  // int wK = -1;
-  // for (int i = 0; i < 3 && wK != 27; wK = waitKey(50))
-  //   {
-  //     if (clicks.size() > 0)
-  // 	{
-  // 	  //grab point
-  // 	  ref_points.push_back(Point2f(clicks.front()));
-  // 	  clicks.pop();
-  // 	  //mark
-  // 	  circle(image, ref_points[i], 5, red, -1);
-  // 	  //show
-  // 	  imshow("Image", image);
-  // 	  i++;
-  // 	}
-  //   }
-  // if (wK == 27)
-  //   exit(0);
-  // paint_polygon(image, ref_points, red);
-
-
-
-
-
+  setMouseCallback("Image", callback, NULL);
+  vector<Point2f> ref_points;
+  int wK = -1;
+  for (int i = 0; i < 3 && wK != 27; wK = waitKey(50))
+    {
+      if (clicks.size() > 0)
+  	{
+  	  //grab point
+  	  ref_points.push_back(Point2f(clicks.front()));
+  	  clicks.pop();
+  	  //mark
+  	  circle(image, ref_points[i], 5, red, -1);
+  	  //show
+  	  imshow("Image", image);
+  	  i++;
+  	}
+    }
+  if (wK == 27)
+    exit(0);
+  paint_polygon(image, ref_points, red);
 
   imshow("Image", image);
 
+  cout << ref_points << endl;
+
+
+
   waitKey(0);
-
-
 
   return 0;
 }
