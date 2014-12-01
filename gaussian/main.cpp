@@ -28,7 +28,8 @@ int main(int argc, char** argv )
   int r1 = strtol(argv[1], &check, 10);
   if (check == argv[1])
     {
-      print_errmsg(argv[0]);
+      cerr << "usage: " << argv[0] << " (gauss radius) [-f <Image_path>]\n";
+      cerr << "This function performs a gaussian blur operation on the provided image (after grayscale) and saves the result as a png. It outputs the name of the created file. If the -f argument isn't provided, it takes a filename from standard input.\n";
       return -1;
     }
 
