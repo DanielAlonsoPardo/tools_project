@@ -9,10 +9,14 @@ file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
 include_directories(OpenCV_utilities)
 
+#programs
 add_subdirectory(diff_gauss)
 add_subdirectory(gaussian)
 add_subdirectory(range_stretch)
 add_subdirectory(threshold)
+add_subdirectory(deperspectivize)
+#libs
 add_subdirectory(OpenCV_utilities)
+#misc
 add_subdirectory(test)
 

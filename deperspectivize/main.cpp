@@ -114,9 +114,9 @@ int main(int argc, char** argv )
 //So the four target points will be the four edges.
   vector<Point2f> dst_points;
   dst_points.push_back(Point2f(0, 0));
-  dst_points.push_back(Point2f(0, image.size().width));
-  dst_points.push_back(Point2f(image.size().height, image.size().width));
-  dst_points.push_back(Point2f(image.size().height, 0));
+  dst_points.push_back(Point2f(image.size().width, 0));
+  dst_points.push_back(Point2f(image.size().width, image.size().height));
+  dst_points.push_back(Point2f(0, image.size().height));
 
   Mat trans = getPerspectiveTransform(ref_points, dst_points);
 
