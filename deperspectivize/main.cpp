@@ -22,8 +22,12 @@ using namespace std;
 
 void print_errmsg(char* arg)
 {
-  cerr << "usage: " << arg << " [-f <Image_path>] [-i <file with points to use>] [-o <file to write points used>]\n";
-  cerr << "This program applies a perspective transform on the image provided using four points chosen by the user either manually or specifying a file through -i. The image is stretched such that the four points coincide with the edges of the original image. It outputs the name of the created file and the points chosen points if the -o option was specified. If the -f argument isn't specified, it takes a filename from standard input.\n";
+  cerr << "usage: " << arg << " [-f <Image_path>] [-i <file with points to use>] [-o <file to write points used>] [-t <file with points to mark>]\n";
+  cerr << "This program applies a perspective transform on the image provided using four points chosen by the user either manually or specifying a file through -i. The image is stretched such that the four points coincide with the edges of the original image. It outputs the name of the created file.\n"
+       << "\t-f\tImage to transform.\n"
+       << "\t-o\tFile to write used points to.\n"
+       << "\t-i\tFile to read points from.\n"
+       << "\t-t\tFile to read points from. These will be painted on the image while manually choosing points, has no other effect.\n";
 }
 
 //globals???????
@@ -47,6 +51,7 @@ int main(int argc, char** argv )
   string filename;
   string read_file;
   string write_file;
+  string helper_file;
 
   for (int i = 1; i < argc; i++)
     {
@@ -56,6 +61,8 @@ int main(int argc, char** argv )
 	write_file = argv[++i];
       else if (!strcmp(argv[i], "-f"))
 	filename = argv[++i];
+      else if (!strcmp(argv[i], "-t"))
+	helper_file = argv[++i];
       else
 	{
 	  print_errmsg(argv[0]);
@@ -87,6 +94,44 @@ int main(int argc, char** argv )
       imshow("Point selection", point_selection_img);
       setMouseCallback("Point selection", callback, NULL);
 
+
+      /**/
+      /*Read points from -t file*/
+      /**/
+      if (!helper_file.empty())
+	{
+	  vector<Point2f> t_points;
+	  ifstream t_file;
+	  t_file.open(helper_file);
+	  if (!t_file)
+	    {
+	      cerr << "File could not be opened: " << helper_file << endl;
+	      print_errmsg(argv[0]);
+	      return -1;
+	    }
+
+	  float x, y;
+	  while (t_file >> x >> y)
+	    t_points.push_back(Point2f(x, y));
+
+	  if (t_points.size() != 4)
+	    {
+	      cerr << "File must contain exactly 4 points with the following syntax: \n"
+		   << "<x_pos> <y_pos>\\n\n";
+	      print_errmsg(argv[0]);
+	      return -1;
+	    }
+	  t_file.close();
+
+	  /**/
+	  /*Show the points*/
+	  /**/
+	  paint_tools::paint_points(point_selection_img, t_points, 1, paint_tools::red);
+	  paint_tools::paint_points(point_selection_img, t_points, 6, paint_tools::red, 1);
+	  imshow("Point selection", point_selection_img);
+	}
+
+
       //Select 4 points, showing them
       /***********************************/
       /* Grab the four reference points */
@@ -115,6 +160,9 @@ int main(int argc, char** argv )
       destroyAllWindows();
     }
   else
+    /**/
+    /* (-i): Read points from file instead of selecting by hand*/
+    /**/
     {
       ifstream in_file;
       in_file.open(read_file);
@@ -140,7 +188,7 @@ int main(int argc, char** argv )
     }
 
 
-  //Perform transformationx
+  //Perform transformation
 //Resulting image should be the same size as original image
 //So the four target points will be the four edges.
   vector<Point2f> dst_points;
@@ -167,6 +215,8 @@ int main(int argc, char** argv )
 	out_file << ref_points[i].x << " " << ref_points[i].y << endl;
       out_file.close();
     }
+
+
 
   //Change filename extension
   std::string writename = filename;
