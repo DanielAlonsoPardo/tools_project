@@ -15,6 +15,7 @@ add_subdirectory(gaussian)
 add_subdirectory(range_stretch)
 add_subdirectory(threshold)
 add_subdirectory(deperspectivize)
+add_subdirectory(blacknwhite)
 #libs
 add_subdirectory(OpenCV_utilities)
 #misc

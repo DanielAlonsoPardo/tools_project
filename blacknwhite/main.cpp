@@ -24,11 +24,11 @@ int main(int argc, char** argv )
 {
   string filename;
   if (argc == 3)
-    if (!strcmp(argv[2], "-f"))
-      filename = argv[3];
+    if (!strcmp(argv[1], "-f"))
+      filename = argv[2];
     else
       {
-	cerr << "No filename provided/n";
+	cerr << "Argument not recognized./n";
 	print_errmsg(argv[0]);
 	return -1;
       }
@@ -54,7 +54,7 @@ int main(int argc, char** argv )
   //add operation tag
   extension << "_" << "bw" << ".png";
   writename += extension.str();
-  imwrite(writename, g1);
+  imwrite(writename, image);
   cout << writename << endl;
 
   return 0;
