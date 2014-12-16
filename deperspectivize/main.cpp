@@ -96,7 +96,6 @@ int main(int argc, char** argv )
       resize(image, point_selection_img, Size(), ZOOM, ZOOM, cv::INTER_NEAREST);
       namedWindow("Point selection");
       imshow("Point selection", point_selection_img);
-      cerr << point_selection_img.size();
       setMouseCallback("Point selection", callback, NULL);
 
 
