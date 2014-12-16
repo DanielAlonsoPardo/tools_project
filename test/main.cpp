@@ -62,7 +62,7 @@ int main(int argc, char** argv )
       if (clicks.size() > 0)
   	{
   	  //grab point
-  	  ref_points.push_back(Point2f(clicks.front()));
+  	  ref_points.push_back(Point2f(clicks.front())*0.5);
   	  clicks.pop();
   	  //mark
   	  circle(image, ref_points[i], 5, red, -1);
