@@ -89,9 +89,14 @@ int main(int argc, char** argv )
       /** Graphic point selection **/
       /**                         **/
       //Show image to the user
-      Mat point_selection_img = image.clone();
+
+      //Image must be shown at x4 size
+      const double ZOOM = 4;
+      Mat point_selection_img;
+      resize(image, point_selection_img, Size(), ZOOM, ZOOM, cv::INTER_NEAREST);
       namedWindow("Point selection");
       imshow("Point selection", point_selection_img);
+      cerr << point_selection_img.size();
       setMouseCallback("Point selection", callback, NULL);
 
 
@@ -112,7 +117,7 @@ int main(int argc, char** argv )
 
 	  float x, y;
 	  while (t_file >> x >> y)
-	    t_points.push_back(Point2f(x, y));
+	    t_points.push_back(Point2f(x, y) * ZOOM);
 
 	  if (t_points.size() != 4)
 	    {
@@ -142,10 +147,10 @@ int main(int argc, char** argv )
 	  if (clicks.size() > 0)
 	    {
 	      //grab point
-	      ref_points.push_back(Point2f(clicks.front()));
+	      ref_points.push_back(Point2f(clicks.front())*(1/ZOOM));
 	      clicks.pop();
 	      //mark
-	      circle(point_selection_img, ref_points[i], 5, paint_tools::red, -1);
+	      circle(point_selection_img, ref_points[i]*ZOOM, 5, paint_tools::red, -1);
 	      //show
 	      imshow("Point selection", point_selection_img);
 	      i++;
