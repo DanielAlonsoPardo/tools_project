@@ -27,4 +27,22 @@ namespace OpenCV_tools
 
     return r;
   }
+
+  void image_check(Mat img) {
+    if (!img.data)
+      {
+	cerr << "No image data \n"
+	     << "Admitted formats reminder: *.bmp, *.dib, *.jpeg, *.jpg, *.jpe, *.jp2, *.png, *.pbm, *.pgm, *.ppm, *.sr, *.ras, *.tiff, *.tif \n";
+	exit(-1);
+      }
+  }
+
+  void image_check(Mat img, string filename) {
+    if (!img.data)
+      {
+	cerr << "Failed to load " << filename << ", no image data \n"
+	     << "Admitted formats reminder: *.bmp, *.dib, *.jpeg, *.jpg, *.jpe, *.jp2, *.png, *.pbm, *.pgm, *.ppm, *.sr, *.ras, *.tiff, *.tif \n";
+	exit(-1);
+      }
+  }
 }
