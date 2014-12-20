@@ -16,7 +16,7 @@ using namespace std;
  */
 
 void print_errmsg(const char* argv) {
-      cerr << "usage: " << argv << " (threshold value) [-t <threshold type>] [-f <Image_path>]\n";
+      cerr << "usage: " << argv << " (threshold value) [-t <threshold type>] [-f <Image_path>] [-c <fill value(if applicable)>]\n";
       cerr << "This function performs a threshold operation on the provided image (after grayscale) and saves the inverted result as a png. It outputs the name of the created file. If the -f argument isn't provided, it takes a filename from standard input.\n";
       cerr << "Valid threshold types are:\n"
 	   << "THRESH_BINARY\n"
