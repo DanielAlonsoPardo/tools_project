@@ -19,7 +19,7 @@ using namespace std;
 void print_errmsg(const char* argv)
 {
   cerr << "usage: " << argv << " <first gauss radius> <second gauss radius> [-l | -r | -a | ar] [-f <filename>]\n"
-       << "This function performs a difference of gaussians operation on the provided image (after grayscale) and saves the result as a png. If the -f argument isn't provided, it takes a filename from standard input. It outputs the name of the created file.\n"
+       << "This program performs a difference of gaussians operation on the provided image (after grayscale) and saves the result as a png. If the -f argument isn't provided, it takes a filename from standard input. It outputs the name of the created file.\n"
        << "Options:\n"
        << "\t-l\t\"Lossless\": Does not truncate negative values to 0. This stretches the colors range to [0-255].\n"
        << "\t-r\t\"Range\": This sets the colors range to [0-255].\n"

@@ -18,6 +18,7 @@ add_subdirectory(deperspectivize)
 add_subdirectory(blacknwhite)
 add_subdirectory(chromakey)
 add_subdirectory(crop)
+add_subdirectory(average)
 #libs
 add_subdirectory(OpenCV_utilities)
 #misc
