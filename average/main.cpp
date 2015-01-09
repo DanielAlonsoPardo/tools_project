@@ -1,7 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <queue>
-#include <fstream>
 
 #include <opencv2/opencv.hpp>
 #include <opencv/highgui.h>
@@ -17,7 +15,7 @@ using namespace std;
 
 void print_errmsg(const char* argv)
 {
-  cerr << "Use: " << argv << "<image1> <image2> [more images ...]" endl
+  cerr << "Use: " << argv << "<image1> <image2> [more images ...]" << endl
        << "This program takes in several images and outputs a single image that is the average of the inputs. Using images of different sizes causes undefined behaviour. It outputs the name of the created file, which is the name of the first file + \"_avg\"\n";
 }
 
@@ -30,7 +28,7 @@ int main(int argc, char** argv )
    }
 
   Mat acc, avg;
-  for (int i = 0; i < argc - 1; i++)
+  for (int i = 1; i < argc; i++)
     {
       Mat image = imread(argv[i], 1);
       if ( !image.data )
@@ -40,11 +38,11 @@ int main(int argc, char** argv )
 	  return -1;
 	}
       if (acc.empty())
-	acc = Mat(image.size(), CV_32UC3, Scalar(0, 0, 0));
+	acc = Mat(image.size(), CV_32FC3, Scalar(0, 0, 0));
       accumulate(image, acc);
     }
 
-  acc.convertTo(avg, CV_32UC3, 1.0/(argc - 1));
+  acc.convertTo(avg, CV_32SC3, 1.0/(argc - 1));
 
 
   std::string writename = argv[1];
@@ -53,7 +51,7 @@ int main(int argc, char** argv )
 
   extension << "_avg.png";
   writename += extension.str();
-  imwrite(writename, gauss_diff);
+  imwrite(writename, avg);
   printf("%s\n", writename.c_str());
 
   return 0;
