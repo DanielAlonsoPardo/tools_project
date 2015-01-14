@@ -17,6 +17,7 @@ using namespace std;
   -Invert the mask
   -Perform gauss operation beforehand
   -Return the original image cropped using the created mask
+  -Perform threshold on channels other than just hue
 
  */
 
@@ -29,7 +30,9 @@ void print_errmsg(const char* argv)
        << "\t-f <file>\tSpecify file to use\n"
        << "\t-g <radius>\tPerform a gaussian blur with the given radius before calculating the mask\n"
        << "\t-i\tInvert the mask\n"
-       << "\t-c\tSave the original image cropped with the generated mask, instead of the mask itself.\n";
+       << "\t-c\tSave the original image cropped with the generated mask, instead of the mask itself.\n"
+       << "\t-s\tSpecify saturation lower bound\n"
+       << "\t-v\tSpecify value lower bound\n";
 
 }
 
@@ -37,9 +40,10 @@ int main(int argc, char** argv )
 {
   string filename;
   int lowerbound, upperbound;//hue bounds
+  int s_lowerbound, v_lowerbound;//saturation and value bounds
   int gauss_radius;
   //Option flags
-  bool F = false, G = false, I = false, C = false;
+  bool F = false, G = false, I = false, C = false, S = false, V = false;
 
   if (argc < 3)
     {
@@ -59,7 +63,7 @@ int main(int argc, char** argv )
   {//Parse options
     char opt;
     char* check;
-    while ((opt = getopt (argc, argv, "f:g:ic")) != -1)
+    while ((opt = getopt(argc, argv, "f:g:ics:v:")) != -1)
       switch (opt)
 	{
 	case 'f':
@@ -71,7 +75,7 @@ int main(int argc, char** argv )
 	  gauss_radius = strtol(optarg, &check, 10);
 	  if (check == optarg)
 	    {
-	      cerr << "Option -g require a numerical argument.\n\n";
+	      cerr << "Option -g requires a numerical argument.\n\n";
 	      print_errmsg(argv[0]);
 	      return -1;
 	    }
@@ -79,10 +83,32 @@ int main(int argc, char** argv )
 	  break;
 	case 'i':
 	  I = true;
+	  break;
 	case 'c':
 	  C = true;
+	  break;
+	case 's':
+	  S = true;
+	  s_lowerbound = strtol(optarg, &check, 10);
+	  if (check == optarg)
+	    {
+	      cerr << "Option -s requires a numerical argument.\n\n";
+	      print_errmsg(argv[0]);
+	      return -1;
+	    }
+	  break;
+	case 'v':
+	  V = true;
+	  v_lowerbound = strtol(optarg, &check, 10);
+	  if (check == optarg)
+	    {
+	      cerr << "Option -v requires a numerical argument.\n\n";
+	      print_errmsg(argv[0]);
+	      return -1;
+	    }
+	  break;
 	case '?':
-	  if (optopt == 'f' || optopt == 'g')
+	  if (optopt == 'f' || optopt == 'g' || optopt == 's' || optopt == 'v')
 	    {
 	      cerr << "Option " << (char)optopt << " requires an argument.\n\n";
 	      print_errmsg(argv[0]);
@@ -116,7 +142,7 @@ int main(int argc, char** argv )
   /////////////////////////////////////////////////
 
 
-  Mat image = imread(filename), copy, mask;
+  Mat image = imread(filename), copy, mask, smask, vmask;
   OpenCV_tools::image_check(image, filename);
 
   //G, I, C
@@ -144,6 +170,18 @@ int main(int argc, char** argv )
   if (I)
     bitwise_not(mask, mask);
 
+  if (S)
+    {
+      inRange(channels[1], s_lowerbound, 255, smask);
+      bitwise_and(mask, smask, mask);
+    }
+
+  if (V)
+    {
+      inRange(channels[2], v_lowerbound, 255, vmask);
+      bitwise_and(mask, vmask, mask);
+    }
+
   Mat cropped;
   if (C)
     image.copyTo(cropped, mask);
@@ -160,6 +198,10 @@ int main(int argc, char** argv )
     extension << "i-";
   if (C)
     extension << "c-";
+  if (S)
+    extension << "s" << s_lowerbound << "-";
+  if (V)
+    extension << "v" << v_lowerbound << "-";
   extension << lowerbound << "-" << upperbound << "ChrK.png";
   writename += extension.str();
   imwrite(writename, C ? cropped : mask);
