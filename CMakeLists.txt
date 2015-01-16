@@ -4,7 +4,12 @@ project("OpenCV tools")
 find_package( OpenCV REQUIRED )
 add_definitions( -std=c++11 )
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY $ENV{TFG}/bin)
+if (NOT DEFINED ENV{TFG})
+	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+else ()
+	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY $ENV{TFG}/bin)
+endif()
+
 file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
 include_directories(OpenCV_utilities)

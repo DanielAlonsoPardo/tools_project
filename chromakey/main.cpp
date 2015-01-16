@@ -24,15 +24,15 @@ using namespace std;
 void print_errmsg(const char* argv)
 {
   cerr << "Usage: " << argv << " <lower hue bound> <upper hue bound> [OPTIONS]\n"
-       << "This program creates a mask that covers all hues between the given values. If the -f argument isn't provided, it takes a filename from standard input. The result is saved as a png and the filename is printed to standard output.\n"
+       << "This program creates a mask that selects all hues between the given values. If the -f argument isn't provided, it takes a filename from standard input. The result is saved as a png and the filename is printed to standard output.\n"
        << "The name of the output file, if not specified, is equals to the original name minus the file extension (which is changed to .png) plus a trailingunderscore, the options used and \"ChrK\"\n"
        << "Options:\n"
        << "\t-f <file>\tSpecify file to use\n"
        << "\t-g <radius>\tPerform a gaussian blur with the given radius before calculating the mask\n"
        << "\t-i\tInvert the mask\n"
        << "\t-c\tSave the original image cropped with the generated mask, instead of the mask itself.\n"
-       << "\t-s\tSpecify saturation lower bound\n"
-       << "\t-v\tSpecify value lower bound\n";
+       << "\t-s\tSpecify saturation upper bound\n"
+       << "\t-v\tSpecify value upper bound\n";
 
 }
 
@@ -157,30 +157,29 @@ int main(int argc, char** argv )
   vector<Mat> channels;
   split(copy, channels);
   ///upper bound is allowed to be lower than lower bound, its the same but inverted
-  if (upperbound < lowerbound)
+
+  if (lowerbound <= upperbound)
+    inRange(channels[0], lowerbound, upperbound, mask);
+  else
     {
-      int xchng = upperbound;
-      upperbound = lowerbound;
-      lowerbound = xchng;
-      I = !I;
+      inRange(channels[0], upperbound, lowerbound, mask);
+      bitwise_not(mask, mask);
     }
-
-  inRange(channels[0], lowerbound, upperbound, mask);
-
-  if (I)
-    bitwise_not(mask, mask);
 
   if (S)
     {
-      inRange(channels[1], s_lowerbound, 255, smask);
-      bitwise_and(mask, smask, mask);
+      inRange(channels[1], 0, s_lowerbound, smask);
+      bitwise_or(mask, smask, mask);
     }
 
   if (V)
     {
-      inRange(channels[2], v_lowerbound, 255, vmask);
-      bitwise_and(mask, vmask, mask);
+      inRange(channels[2], 0, v_lowerbound, vmask);
+      bitwise_or(mask, vmask, mask);
     }
+
+  if (I)
+    bitwise_not(mask, mask);
 
   Mat cropped;
   if (C)
