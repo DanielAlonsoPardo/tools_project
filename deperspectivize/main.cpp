@@ -78,6 +78,7 @@ int main(int argc, char** argv )
     {
       cerr << "No image data: " << filename << endl;
       cerr << "Admitted formats reminder: *.bmp, *.dib, *.jpeg, *.jpg, *.jpe, *.jp2, *.png, *.pbm, *.pgm, *.ppm, *.sr, *.ras, *.tiff, *.tif \n";
+      print_errmsg(argv[0]);
       return -1;
     }
 
@@ -214,6 +215,7 @@ int main(int argc, char** argv )
 	  cerr << "Problem writing to file: " << write_file << endl
 	       << "Points to be written: \n"
 	       << ref_points << endl;
+	  print_errmsg(argv[0]);
 	}
       for (int i = 0; i < dst_points.size(); i++)
 	out_file << ref_points[i].x << " " << ref_points[i].y << endl;
