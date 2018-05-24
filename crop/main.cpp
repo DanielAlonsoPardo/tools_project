@@ -7,10 +7,8 @@
 
 #include <opencv2/opencv.hpp>
 #include <opencv/highgui.h>
-#include <opencv2/xfeatures2d.hpp>
 
 using namespace cv;
-using namespace xfeatures2d;
 using namespace std;
 using namespace paint_tools;
 
